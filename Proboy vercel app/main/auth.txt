@@ -1,4 +1,2 @@
-shahan:shahan
-ali:ali123
-testuser:testpass123
-admin:securepassword
+proboy:proboy
+mehboob:mehboob
