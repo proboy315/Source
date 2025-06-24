@@ -1,1 +1,3 @@
-proboy:proboy315
+P:314:p.html
+username2:password2:redirect2.html
+username3:password3  # will redirect to home.html by default
