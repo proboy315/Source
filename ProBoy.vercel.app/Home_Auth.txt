@@ -1,4 +1,5 @@
 proboy315:shahan315:home.html
 arham:arham:home.html
+shahan:ali:home.html
 username3:password3  # will redirect to home.html by default
 shahan:ali
