@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProBoy Auto Pinger</title>
+    <style>
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 2.5em;
+            text-shadow: 0 0 20px #0f0, 0 0 40px #0ff;
+            margin-bottom: 10px;
+        }
+        #status {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        #log {
+            margin-top: 30px;
+            width: 90%;
+            max-height: 40vh;
+            overflow-y: auto;
+            background: #111;
+            border: 1px solid #0f0;
+            padding: 10px;
+            box-shadow: 0 0 10px #0f0;
+            font-size: 0.9em;
+        }
+        .success {
+            color: #0f0;
+        }
+        .error {
+            color: #f00;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 ProBoy Pinger HUD</h1>
+    <p id="status">Initializing pinger...</p>
+    <div id="log"></div>
+
+    <script>
+        const targetURL = 'https://proboy.is-best.net/prabathMD/ping.php';
+        const minPings = 3; // Minimum pings per UptimeRobot hit
+        const maxPings = 7; // Maximum pings per UptimeRobot hit
+        const minDelay = 1000; // 1 sec
+        const maxDelay = 5000; // 5 sec
+
+        const logEl = document.getElementById('log');
+        const statusEl = document.getElementById('status');
+
+        function log(message, type = 'success') {
+            const timestamp = new Date().toLocaleTimeString();
+            const line = document.createElement('div');
+            line.innerHTML = `[${timestamp}] ${message}`;
+            line.className = type;
+            logEl.prepend(line);
+        }
+
+        async function sendPing() {
+            try {
+                const response = await fetch(targetURL, {
+                    method: 'GET',
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+                        'Cache-Control': 'no-cache'
+                    }
+                });
+                if (response.ok) {
+                    log('✅ Ping Success');
+                } else {
+                    log(`⚠️ Ping Failed (Status: ${response.status})`, 'error');
+                }
+            } catch (err) {
+                log(`❌ Ping Error: ${err.message}`, 'error');
+            }
+        }
+
+        async function multiPing() {
+            const pingCount = Math.floor(Math.random() * (maxPings - minPings + 1)) + minPings;
+            statusEl.textContent = `🔁 Sending ${pingCount} random pings...`;
+            for (let i = 0; i < pingCount; i++) {
+                await sendPing();
+                if (i < pingCount - 1) {
+                    const delay = Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
+                    log(`⏳ Waiting ${delay / 1000}s for next ping...`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+            statusEl.textContent = `✅ Completed ${pingCount} pings. Waiting for next UptimeRobot hit...`;
+        }
+
+        // Start on page load
+        multiPing();
+    </script>
+</body>
+</html>
